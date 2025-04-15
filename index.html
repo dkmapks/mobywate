@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Odliczanie do 3 maja 2025</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      font-size: 2em;
+      margin: 0.5em 0;
+    }
+    #countdown {
+      font-size: 1.5em;
+      margin: 1em 0;
+    }
+    #emoji {
+      font-size: 5em;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Odliczanie do 3 maja 2025</h1>
+  <div id="countdown"></div>
+  <div id="emoji"></div>
+
+  <script>
+    // Obliczanie różnicy czasu do 3 maja 2025
+    function updateCountdown() {
+      const targetDate = new Date('2025-05-03T00:00:00');
+      const now = new Date();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        document.getElementById('countdown').innerText = 'To już dziś!';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById('countdown').innerText = 
+        `${days} dni, ${hours} godzin, ${minutes} minut, ${seconds} sekund`;
+    }
+
+    // Lista emotek
+    const emojis = ["😀", "🎉", "💖", "🚀", "🌟", "🔥", "✨", "🎈", "🌈", "🍀", "💎"];
+    
+    // Funkcja do ustawiania emotki
+    function setEmoji() {
+      const now = new Date();
+      const daysSinceEpoch = Math.floor(now.getTime() / (1000 * 60 * 60 * 24));
+      const randomIndex = daysSinceEpoch % emojis.length; // Codziennie nowa emotka
+      document.getElementById('emoji').innerText = emojis[randomIndex];
+    }
+
+    // Aktualizacja co sekundę
+    setInterval(updateCountdown, 1000);
+
+    // Ustawienie początkowej emotki
+    setEmoji();
+  </script>
+</body>
+</html>
