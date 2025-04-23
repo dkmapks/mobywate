@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  <style>
+    #reader {
+      width: 300px;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>QR Code Scanner</h1>
+  <div id="reader"></div>
+  <p id="result">Scanned result will appear here.</p>
+
+  <script>
+    const html5QrCode = new Html5Qrcode("reader");
+
+    function onScanSuccess(decodedText, decodedResult) {
+        // Wyświetl wynik
+        document.getElementById('result').innerText = `Scanned: ${decodedText}`;
+        console.log(`Scanned result: ${decodedText}`);
+    }
+
+    // Rozpocznij skanowanie
+    html5QrCode.start(
+      { facingMode: "environment" }, // Kamera tylna
+      { fps: 10, qrbox: 250 },
+      onScanSuccess
+    ).catch(err => {
+      console.error(`Unable to start scanning, error: ${err}`);
+    });
+  </script>
+</body>
+</html>
