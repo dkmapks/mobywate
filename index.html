@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Clicker Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        #click-button {
+            font-size: 24px;
+            padding: 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        #click-button:hover {
+            background-color: #45a049;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 150px;
+            margin: 10px;
+        }
+
+        #game {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="game">
+        <h1>Clicker Game</h1>
+        <div id="stats">
+            <p>Clicks: <span id="clicks">0</span></p>
+            <p>Bank Balance: <span id="bank">0</span></p>
+        </div>
+        <button id="click-button">Click Me!</button>
+        <div id="upgrades">
+            <h2>Upgrades</h2>
+            <button id="upgrade1">+1 Click (Cost: 25)</button>
+            <button id="upgrade2">+1.5/s (Cost: 125)</button>
+            <button id="upgrade3">+10 Clicks (Cost: 200)</button>
+            <button id="upgrade4">+8/s (Cost: 600)</button>
+            <button id="upgrade5">+100 Clicks (Cost: 1500)</button>
+        </div>
+        <div id="bank-section">
+            <h2>Bank</h2>
+            <input type="number" id="bank-amount" placeholder="Enter amount">
+            <button id="deposit-button">Deposit</button>
+            <p id="bank-timer"></p>
+        </div>
+    </div>
+    <script>
+        let clicks = 0;
+        let bankBalance = 0;
+        let clickValue = 1;
+        let upgrades = [
+            { id: 1, cost: 25, increment: 1, type: "click" },
+            { id: 2, cost: 125, increment: 1.5, type: "passive" },
+            { id: 3, cost: 200, increment: 10, type: "click" },
+            { id: 4, cost: 600, increment: 8, type: "passive" },
+            { id: 5, cost: 1500, increment: 100, type: "click" },
+        ];
+
+        let passiveIncome = 0;
+
+        // Click button
+        document.getElementById("click-button").addEventListener("click", () => {
+            clicks += clickValue;
+            updateStats();
+        });
+
+        // Update stats
+        function updateStats() {
+            document.getElementById("clicks").textContent = Math.floor(clicks);
+            document.getElementById("bank").textContent = Math.floor(bankBalance);
+        }
+
+        // Buy upgrades
+        upgrades.forEach(upgrade => {
+            document.getElementById(`upgrade${upgrade.id}`).addEventListener("click", () => {
+                if (clicks >= upgrade.cost) {
+                    clicks -= upgrade.cost;
+
+                    if (upgrade.type === "click") {
+                        clickValue += upgrade.increment;
+                    } else if (upgrade.type === "passive") {
+                        passiveIncome += upgrade.increment;
+                    }
+
+                    // Increase cost after purchase
+                    upgrade.cost = Math.floor(upgrade.cost * 1.5);
+                    document.getElementById(`upgrade${upgrade.id}`).textContent = 
+                        `+${upgrade.increment} ${upgrade.type === "click" ? "Click" : "/s"} (Cost: ${upgrade.cost})`;
+
+                    updateStats();
+                }
+            });
+        });
+
+        // Passive income
+        setInterval(() => {
+            clicks += passiveIncome;
+            updateStats();
+        }, 1000);
+
+        // Bank functionality
+        let bankTimer = null;
+
+        document.getElementById("deposit-button").addEventListener("click", () => {
+            const depositAmount = parseInt(document.getElementById("bank-amount").value);
+            if (depositAmount > 0 && clicks >= depositAmount) {
+                clicks -= depositAmount;
+                updateStats();
+
+                clearTimeout(bankTimer);
+                setTimeout(() => {
+                    bankBalance += depositAmount * 1.1; // +10% after 3 minutes
+                    updateStats();
+                }, 180000); // 180000 ms = 3 minutes
+            }
+        });
+
+        // Mod menu
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "7" || e.key === "4" || e.key === "3" || e.key === "2") {
+                const code = prompt("Enter Mod Code:");
+                if (code === "7432") {
+                    const modChoice = prompt("Mod Menu:\n1. Add Clicks\n2. Add Bank Balance\n3. Add Passive Income");
+                    
+                    switch (modChoice) {
+                        case "1":
+                            const addClicks = parseInt(prompt("How many clicks to add?"));
+                            clicks += addClicks;
+                            break;
+                        case "2":
+                            const addBank = parseInt(prompt("How much to add to the bank?"));
+                            bankBalance += addBank;
+                            break;
+                        case "3":
+                            const addPassive = parseFloat(prompt("How much passive income to add?"));
+                            passiveIncome += addPassive;
+                            break;
+                    }
+                    updateStats();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
