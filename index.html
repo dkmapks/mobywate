@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Przycisk Kłoczko</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #output {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Strona z przyciskiem</h1>
+    <button onclick="showText()">Kliknij mnie</button>
+    <div id="output"></div>
+
+    <script>
+        function showText() {
+            document.getElementById('output').innerText = "jebać kłoczko";
+        }
+    </script>
+</body>
+</html>
