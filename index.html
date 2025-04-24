@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Przycisk Kłoczko</title>
+    <title>Klikalne Przycisk</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,24 +14,29 @@
         button {
             padding: 10px 20px;
             font-size: 16px;
+            margin: 5px;
             cursor: pointer;
         }
 
         #output {
             margin-top: 20px;
-            font-size: 18px;
+            font-size: 20px;
             color: #333;
         }
     </style>
 </head>
 <body>
-    <h1>Strona z przyciskiem</h1>
-    <button onclick="showText()">Kliknij mnie</button>
+    <h1>Klikalne Przycisk</h1>
+    <button onclick="showWord('jebać kłoczko')">Kłoczko</button>
+    <button onclick="showWord('jebać npc')">Npc</button>
+    <button onclick="showWord('jebać maćka')">Maćka</button>
+    <button onclick="showWord('jebać aline')">Aline</button>
+    <button onclick="showWord('jebać marchel')">Marchel</button>
     <div id="output"></div>
 
     <script>
-        function showText() {
-            document.getElementById('output').innerText = "jebać kłoczko";
+        function showWord(word) {
+            document.getElementById('output').innerText = word;
         }
     </script>
 </body>
