@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klikalne Przycisk</title>
+    <title>Klikalne Przycisk z Animacją</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,6 +16,11 @@
             font-size: 16px;
             margin: 5px;
             cursor: pointer;
+            transition: transform 0.2s ease; /* Dodanie animacji */
+        }
+
+        button:active {
+            transform: scale(1.2); /* Powiększenie przycisku po kliknięciu */
         }
 
         #output {
@@ -26,12 +31,12 @@
     </style>
 </head>
 <body>
-    <h1>Klikalne Przycisk</h1>
+    <h1>Klikalne Przycisk z Animacją</h1>
     <button onclick="showWord('jebać kłoczko')">Kłoczko</button>
-    <button onclick="showWord('jebać npc')">Npc</button>
-    <button onclick="showWord('jebać maćka')">Maćka</button>
-    <button onclick="showWord('jebać aline')">Aline</button>
-    <button onclick="showWord('jebać marchel')">Marchel</button>
+    <button onclick="showWord('ubijać npc')">Npc</button>
+    <button onclick="showWord('pieprzyć maćka')">Maćka</button>
+    <button onclick="showWord('zabić aline')">Aline</button>
+    <button onclick="showWord('skatować marchel')">Marchel</button>
     <div id="output"></div>
 
     <script>
