@@ -1,48 +1,109 @@
+# Tworzymy strukturę folderów i plików dla aplikacji webowej "WebObywatel"
+import os
+
+# Ścieżka bazowa
+base_path = "/mnt/data/WebObywatel"
+
+# Struktura katalogów projektu
+folders = [
+    "frontend/public",
+    "frontend/src/components",
+    "frontend/src/pages",
+    "frontend/src/assets",
+    "backend/routes",
+    "backend/models",
+    "backend/controllers"
+]
+
+# Tworzenie folderów
+for folder in folders:
+    os.makedirs(os.path.join(base_path, folder), exist_ok=True)
+
+# Zawartość przykładowych plików
+files = {
+    "frontend/public/index.html": """
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klikalne Przycisk z Animacją</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 5px;
-            cursor: pointer;
-            transition: transform 0.2s ease; /* Dodanie animacji */
-        }
-
-        button:active {
-            transform: scale(1.2); /* Powiększenie przycisku po kliknięciu */
-        }
-
-        #output {
-            margin-top: 20px;
-            font-size: 20px;
-            color: #333;
-        }
-    </style>
+    <title>WebObywatel</title>
 </head>
 <body>
-    <h1>Klikalne Przycisk z Animacją</h1>
-    <button onclick="showWord('jebać kłoczko')">Kłoczko</button>
-    <button onclick="showWord('ubijać npc')">Npc</button>
-    <button onclick="showWord('pieprzyć maćka')">Maćka</button>
-    <button onclick="showWord('zabić aline')">Aline</button>
-    <button onclick="showWord('skatować marchel')">Marchel</button>
-    <div id="output"></div>
-
-    <script>
-        function showWord(word) {
-            document.getElementById('output').innerText = word;
-        }
-    </script>
+    <div id="root"></div>
 </body>
 </html>
+""",
+    "frontend/src/index.js": """
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import HomePage from './pages/HomePage';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<HomePage />);
+""",
+    "frontend/src/pages/HomePage.js": """
+import React from 'react';
+
+function HomePage() {
+  return (
+    <div className="container">
+      <h1>Witaj w WebObywatel</h1>
+      <div className="dashboard">
+        <div className="card">Dowód osobisty</div>
+        <div className="card">Prawo jazdy</div>
+        <div className="card">eRecepty</div>
+        <div className="card">Punkty karne</div>
+      </div>
+    </div>
+  );
+}
+
+export default HomePage;
+""",
+    "frontend/src/index.css": """
+body {
+  font-family: sans-serif;
+  background-color: #f3f4f6;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  padding: 20px;
+}
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+""",
+    "backend/server.js": """
+const express = require('express');
+const app = express();
+const PORT = 5000;
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.send('WebObywatel API działa!');
+});
+
+app.listen(PORT, () => {
+  console.log(`Serwer działa na http://localhost:${PORT}`);
+});
+"""
+}
+
+# Zapisywanie plików
+for path, content in files.items():
+    with open(os.path.join(base_path, path), "w") as f:
+        f.write(content)
+
+base_path  # Zwracamy ścieżkę do gotowego projektu ZIP
+
