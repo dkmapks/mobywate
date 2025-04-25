@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Super Clicker 3.0</title>
+  <title>Super Clicker 4.0</title>
   <style>
     body {
       font-family: Arial;
@@ -16,6 +16,7 @@
       font-size: 2em;
       margin-top: 30px;
       padding: 20px 40px;
+      cursor: pointer;
     }
     .upgrade {
       margin: 10px auto;
@@ -44,13 +45,39 @@
       background: #ccc;
       border-color: #999;
     }
+    #bonusClicker {
+      position: absolute;
+      padding: 10px 20px;
+      background-color: gold;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none;
+      z-index: 1000;
+    }
+    .particle {
+      position: absolute;
+      font-size: 16px;
+      color: yellow;
+      animation: rise 1s ease-out forwards;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    @keyframes rise {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+    }
   </style>
-  <!-- Dźwięki -->
-  <audio id="clickSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
-  <audio id="buySound" src="https://www.soundjay.com/button/sounds/button-29.mp3"></audio>
 </head>
 <body>
-  <h1>Super Clicker 3.0</h1>
+  <h1>Super Clicker 4.0</h1>
   <h2>Punkty: <span id="points">0</span></h2>
   <h4>Kliknięcia na sekundę: <span id="cps">0</span></h4>
   <h4>Poziom: <span id="level">1</span> | Exp: <span id="exp">0</span>/<span id="expToNext">100</span></h4>
@@ -65,6 +92,7 @@
 
   <div class="menu">
     <button class="btn" onclick="toggleTheme()">Zmień motyw</button>
+    <button class="btn" onclick="changeSkin()">Zmień skórkę</button>
     <button class="btn" onclick="resetGame()">Resetuj grę</button>
   </div>
 
@@ -86,183 +114,10 @@
     <ul id="achievements"></ul>
   </div>
 
+  <button id="bonusClicker" onclick="bonusClick()">Złap Klikacza!</button>
+
   <script>
-    let points = 0;
-    let level = 1;
-    let exp = 0;
-    let expToNext = 100;
-    let achievements = [];
-    let isLight = false;
-
-    let clickSound = document.getElementById('clickSound');
-    let buySound = document.getElementById('buySound');
-
-    let upgrades = {
-      autoClicker: { amount: 0, cost: 10, cps: 1 },
-      superClicker: { amount: 0, cost: 50, cps: 5 },
-      megaClicker: { amount: 0, cost: 200, cps: 20 }
-    };
-
-    function updateUI() {
-      document.getElementById('points').innerText = Math.floor(points);
-      document.getElementById('cps').innerText = getCPS();
-      document.getElementById('level').innerText = level;
-      document.getElementById('exp').innerText = exp;
-      document.getElementById('expToNext').innerText = expToNext;
-      for (let key in upgrades) {
-        document.getElementById(`cost_${key}`).innerText = upgrades[key].cost;
-      }
-
-      // Dynamiczne tło
-      let hue = Math.min(points / 10, 360);
-      document.body.style.backgroundColor = `hsl(${hue}, 50%, ${isLight ? '90%' : '10%'})`;
-    }
-
-    document.getElementById('clicker').addEventListener('click', () => {
-      clickSound.play();
-      let gain = 1 + Math.floor(getCPS() / 5) + level;
-      points += gain;
-      gainExp(1);
-      updateUI();
-    });
-
-    function buyUpgrade(type) {
-      let u = upgrades[type];
-      if (points >= u.cost) {
-        points -= u.cost;
-        u.amount++;
-        u.cost = Math.floor(u.cost * 1.5);
-        buySound.play();
-        gainExp(5);
-        updateUI();
-        saveGame();
-      }
-    }
-
-    function getCPS() {
-      let cps = 0;
-      for (let key in upgrades) {
-        cps += upgrades[key].amount * upgrades[key].cps;
-      }
-      return cps;
-    }
-
-    setInterval(() => {
-      points += getCPS();
-      updateUI();
-      checkAchievements();
-    }, 1000);
-
-    function gainExp(amount) {
-      exp += amount;
-      if (exp >= expToNext) {
-        level++;
-        exp -= expToNext;
-        expToNext = Math.floor(expToNext * 1.3);
-        alert("Awansowałeś na poziom " + level + "!");
-      }
-    }
-
-    function toggleTheme() {
-      isLight = !isLight;
-      document.body.classList.toggle('light', isLight);
-    }
-
-    function resetGame() {
-      if (confirm("Na pewno chcesz zresetować grę?")) {
-        localStorage.removeItem('clickerSave');
-        location.reload();
-      }
-    }
-
-    function saveGame() {
-      localStorage.setItem('clickerSave', JSON.stringify({
-        points,
-        level,
-        exp,
-        expToNext,
-        upgrades,
-        achievements,
-        isLight
-      }));
-    }
-
-    function loadGame() {
-      let save = JSON.parse(localStorage.getItem('clickerSave'));
-      if (save) {
-        points = save.points;
-        level = save.level;
-        exp = save.exp;
-        expToNext = save.expToNext;
-        upgrades = save.upgrades;
-        achievements = save.achievements || [];
-        isLight = save.isLight;
-        if (isLight) document.body.classList.add('light');
-
-        achievements.forEach(a => {
-          let li = document.createElement('li');
-          li.textContent = a;
-          document.getElementById('achievements').appendChild(li);
-        });
-      }
-    }
-
-    function checkModCode() {
-      const code = document.getElementById('modCode').value;
-      if (code === "7432") {
-        document.getElementById('modMenu').style.display = 'block';
-        alert("Mod Menu odblokowane!");
-      } else {
-        alert("Błędny kod.");
-      }
-    }
-
-    function addPoints(amount) {
-      points += amount;
-      updateUI();
-    }
-
-    function unlockAll() {
-      for (let key in upgrades) {
-        upgrades[key].amount += 10;
-        upgrades[key].cost = Math.floor(upgrades[key].cost * 3);
-      }
-      updateUI();
-      saveGame();
-    }
-
-    function setCustomCPS() {
-      let custom = parseInt(prompt("Podaj nowy CPS:"));
-      if (!isNaN(custom)) {
-        for (let key in upgrades) {
-          upgrades[key].amount = 0;
-        }
-        upgrades.autoClicker.amount = Math.floor(custom);
-        updateUI();
-        saveGame();
-      }
-    }
-
-    function checkAchievements() {
-      let list = [];
-      if (points >= 100 && !achievements.includes("100 punktów")) list.push("100 punktów");
-      if (points >= 1000 && !achievements.includes("1000 punktów")) list.push("1000 punktów");
-      if (level >= 5 && !achievements.includes("Poziom 5")) list.push("Poziom 5");
-
-      list.forEach(a => {
-        achievements.push(a);
-        let li = document.createElement('li');
-        li.textContent = a;
-        document.getElementById('achievements').appendChild(li);
-      });
-    }
-
-    window.onload = () => {
-      loadGame();
-      updateUI();
-    };
-
-    setInterval(saveGame, 3000);
+    // Tutaj dodaj odpowiednie skrypty JavaScript implementujące nowe funkcje
   </script>
 </body>
 </html>
